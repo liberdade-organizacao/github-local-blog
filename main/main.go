@@ -1,16 +1,13 @@
 package main
 
 import (
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/parser"
 	"fmt"
+	"github.com/liberdade-organizacao/github-local-blog"
 )
 
 func main() {
-	extensions := parser.CommonExtensions | parser.AutoHeadingIDs
-	parser := parser.NewWithExtensions(extensions)
-	md := []byte("# Test\n\nHello Joe!")
-	output := markdown.ToHTML(md, parser, nil)
-	fmt.Println(string(output[:]))
+	md := "# Test\n\nHello Joe!"
+	html := github_local_blog.MarkdownToHTML(md)
+	fmt.Println(html)
 }
 

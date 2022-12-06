@@ -1,8 +1,12 @@
 .PHONY: default
 default: run
 
+.PHONY: test
+test:
+	go test
+
 .PHONY: build
-build:
+build: test
 	go build -o main.exe main/main.go
 
 .PHONY: run

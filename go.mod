@@ -1,4 +1,4 @@
-module github.com/liberdade-controle-automacao/github-local-blog
+module github.com/liberdade-organizacao/github-local-blog
 
 go 1.19
 
