@@ -13,3 +13,22 @@ func TestConvertFromMarkdownToHTML(t *testing.T) {
 	}
 }
 
+func TestCanDownloadBlogIndex(t *testing.T) {
+	blogId := "liberdade-organizacao/posts"
+	_, ok := DownloadIndex(blogId)
+	if ok != nil {
+		t.Fatalf("Couldn't download index: %s", ok)
+	}
+}
+
+func TestMainProcedure(t *testing.T) {
+	blogId := "liberdade-organizacao/posts"
+	indexTemplate := "<html><head></head><body><ul>{{index}}</ul></body></html>"
+	indexPostTemplate := "<li><a href=\"./{{path}}\">{{title}}<></li>"
+	postTemplate := "<html><head></head><body>{{content}}</body></html>"
+	_, ok := DownloadAndCompile(blogId, indexTemplate, indexPostTemplate, postTemplate)
+	if ok != nil {
+		t.Fatalf("Couldn't download and compile: %s", ok)
+	}
+}
+
