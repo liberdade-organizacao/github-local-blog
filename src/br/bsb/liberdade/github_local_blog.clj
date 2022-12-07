@@ -19,7 +19,10 @@
         data (compiler/download-and-compile params)]
     (println "--- # github local blog")
     (println (str "blog id: " blog-id))
+    (println "generated files:")
     (mapv (fn [[path contents]]
-            (spit path contents))
+            (do
+              (println (str "- " path))
+              (spit path contents)))
           data)
     (println "...")))
