@@ -2,6 +2,13 @@
   (:gen-class)
   (:require [br.bsb.liberdade.github-local-blog-compiler :as compiler]))
 
+; TODO complete me!
+(defn parse-args [args]
+  {})
+
+; TODO parse command line arguments
+; TODO use local directory when required
+; TODO give precedence to github download
 (defn -main
   "Receives the blog id; and templates for the index, index posts, and post files"
   [& args]
