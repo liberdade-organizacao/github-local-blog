@@ -5,6 +5,7 @@
             [br.bsb.liberdade.strint :as strint]))
 
 (def default-index-file "index.blog.json")
+(def text-files-regex #"(\.md|\.txt)")
 
 (defn download-from-github [blog-id filename]
   (slurp (str "https://raw.githubusercontent.com/"
@@ -17,8 +18,8 @@
       (download-from-github default-index-file)
       json/read-str))
 
-(defn- make-new-link [old-link]
-  (clojure.string/replace old-link #"\.md" ".html"))
+(defn make-new-link [old-link]
+  (clojure.string/replace old-link text-files-regex ".html"))
 
 (defn- make-index-post [index-post index-post-template]
   (strint/strint index-post-template 
@@ -35,7 +36,7 @@
 (defn generate-post [blog-id index-post post-template]
   (let [path (get index-post "path")
         raw-post (download-from-github blog-id path)]
-    (cond (re-find #"\.md" path) 
+    (cond (re-find text-files-regex path)
             (markdown/md-to-html-string raw-post)
           :else raw-post)))
 

@@ -14,6 +14,12 @@
                    :index-post-template index-post-template
                    :post-template post-template})
 
+(deftest create-new-links
+  (testing "Creates new links from old ones"
+    (is (= "hello.html" (compiler/make-new-link "hello.md")))
+    (is (= "joe.html" (compiler/make-new-link "joe.txt")))
+    (is (= "index.html" (compiler/make-new-link "index.html")))))
+
 (deftest github-downloads
   (testing "can donwload files from github"
     (is (some? (compiler/download-from-github blog-id "index.blog.json")))))
@@ -28,6 +34,6 @@
 (deftest main-flow
   (testing "It can execute the main flow"
     (let [result (compiler/download-and-compile default-args)]
-      (println result)
+      ; (println result)
       (is (some? result)))))
 
