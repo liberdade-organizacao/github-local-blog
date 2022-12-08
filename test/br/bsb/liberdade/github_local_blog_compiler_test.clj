@@ -10,9 +10,13 @@
 (def post-template 
   "<html><body>%{content}</body></html>")
 (def default-args {:blog-id blog-id
+                   :origin :github
                    :index-template index-template
                    :index-post-template index-post-template
                    :post-template post-template})
+(def default-offline-args (assoc default-args
+                                 :blog-id "./posts"
+                                 :origin :local))
 
 (deftest create-new-links
   (testing "Creates new links from old ones"
@@ -26,7 +30,7 @@
 
 (deftest generate-index
   (testing "can generate the index file"
-    (let [index (compiler/load-index blog-id)]
+    (let [index (compiler/download-index blog-id)]
       (is (some? (compiler/generate-index-contents index
                                                    index-template
                                                    index-post-template))))))
@@ -41,8 +45,12 @@
       (is (= expected-result obtained-result)))))
 
 (deftest main-flow
-  (testing "It can execute the main flow"
+  (testing "It can execute the online main flow"
     (let [result (compiler/draw default-args)]
-      (println result)
-      (is (some? result)))))
+      ; (println result)
+      (is (some? result))))
+  (testing "It can execute the offline main flow"
+    (let [result (compiler/draw default-offline-args)]
+      ; (println result)
+      (is some? result))))
 
