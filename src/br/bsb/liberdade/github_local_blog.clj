@@ -2,9 +2,30 @@
   (:gen-class)
   (:require [br.bsb.liberdade.github-local-blog-compiler :as compiler]))
 
-; TODO complete me!
+(def args-flags-to-params {"-b" :blog-id
+                           "-d" :directory
+                           "-i" :index-template-path
+                           "-ip" :index-post-template-path
+                           "-p" :post-template-path})
+
 (defn parse-args [args]
-  {})
+  (loop [i 0
+         limit (count args)
+         current-flag nil
+         outlet {}]
+    (if (>= i limit)
+      outlet
+      (let [arg (nth args i)]
+        (recur (inc i)
+               limit
+               (if (nil? current-flag)
+                 arg
+                 nil)
+               (if (nil? current-flag)
+                 outlet
+                 (assoc outlet 
+                        (get args-flags-to-params current-flag)
+                        arg)))))))
 
 ; TODO parse command line arguments
 ; TODO use local directory when required

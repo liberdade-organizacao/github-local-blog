@@ -30,7 +30,7 @@
                 "-ip" "index_post.template.html"
                 "-p" "post.template.html"]
           expected-params {:blog-id "liberdade-organizacao/posts"
-                           :directory nil
+                           :directory "./posts"
                            :index-template-path "index.template.html"
                            :index-post-template-path "index_post.template.html"
                            :post-template-path "post.template.html"}]
