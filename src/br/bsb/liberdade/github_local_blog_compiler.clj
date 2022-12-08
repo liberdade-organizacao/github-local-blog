@@ -1,6 +1,7 @@
 (ns br.bsb.liberdade.github-local-blog-compiler
   (:gen-class)
-  (:require [clojure.data.json :as json]
+  (:require [clojure.string :as s]
+            [clojure.data.json :as json]
             [markdown.core :as markdown]
             [br.bsb.liberdade.strint :as strint]))
 
@@ -19,7 +20,7 @@
       json/read-str))
 
 (defn make-new-link [old-link]
-  (clojure.string/replace old-link text-files-regex ".html"))
+  (s/replace old-link text-files-regex ".html"))
 
 (defn- make-index-post [index-post index-post-template]
   (strint/strint index-post-template 
@@ -41,14 +42,51 @@
           :else raw-post)))
 
 (defn download-and-compile 
-  [{:keys [blog-id index-template index-post-template post-template]}]
-  (let [index (load-index blog-id)]
-    (reduce (fn [outlet index-post]
-              (assoc outlet 
-                     (make-new-link (get index-post "path"))
-                     (generate-post blog-id index-post post-template)))
-            {"index.html" (generate-index-contents index 
-                                                   index-template 
-                                                   index-post-template)}
-            index)))
+  [blog-id index index-template index-post-template post-template]
+  (reduce (fn [outlet index-post]
+            (assoc outlet 
+                   (make-new-link (get index-post "path"))
+                   (generate-post blog-id index-post post-template)))
+          {"index.html" (generate-index-contents index 
+                                                 index-template 
+                                                 index-post-template)}
+          index))
+
+
+(defn generate-links-for-replacement [index]
+  (reduce (fn [state index-post]
+            (let [old-link (get index-post "path")]
+              (assoc state
+                     old-link
+                     (make-new-link old-link))))
+          {}
+          index))
+
+(defn replace-links [text links-replacement]
+  (reduce (fn [inlet [from-link to-link]]
+            (s/replace inlet from-link to-link))
+          text
+          links-replacement))
+
+(defn replace-all-links [inlet links-replacement]
+  (reduce (fn [outlet [filename contents]]
+            (assoc outlet 
+                   filename 
+                   (replace-links contents
+                                  links-replacement)))
+          {}
+          inlet))
+
+(defn draw [params]
+  (let [blog-id (get params :blog-id)
+        index-template (get params :index-template)
+        index-post-template (get params :index-post-template)
+        post-template (get params :post-template)
+        index (load-index blog-id)]
+    (-> (download-and-compile blog-id
+                              index
+                              index-template
+                              index-post-template
+                              post-template)
+        (replace-all-links (generate-links-for-replacement index)))))
 
