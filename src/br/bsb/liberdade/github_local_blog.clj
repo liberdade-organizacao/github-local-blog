@@ -16,7 +16,7 @@
                 :index-template index-template
                 :index-post-template index-post-template
                 :post-template post-template}
-        data (compiler/download-and-compile params)]
+        data (compiler/draw params)]
     (println "--- # github local blog")
     (println (str "blog id: " blog-id))
     (println "generated files:")

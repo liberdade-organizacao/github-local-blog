@@ -31,9 +31,18 @@
                                                    index-template
                                                    index-post-template))))))
 
+(deftest link-between-files
+  (testing "can replace links between files"
+    (let [text "Link to [this file](./page1.md)\nLink to [Another file](./page2.txt)\n"
+          links-replacement {"page1.md" "page1.html"
+                             "page2.txt" "page2.html"}
+          expected-result "Link to [this file](./page1.html)\nLink to [Another file](./page2.html)\n"
+          obtained-result (compiler/replace-links text links-replacement)]
+      (is (= expected-result obtained-result)))))
+
 (deftest main-flow
   (testing "It can execute the main flow"
-    (let [result (compiler/download-and-compile default-args)]
-      ; (println result)
+    (let [result (compiler/draw default-args)]
+      (println result)
       (is (some? result)))))
 
