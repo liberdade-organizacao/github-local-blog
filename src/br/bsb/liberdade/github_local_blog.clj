@@ -27,26 +27,27 @@
                         (get args-flags-to-params current-flag)
                         arg)))))))
 
-; TODO parse command line arguments
-; TODO use local directory when required
-; TODO give precedence to github download
 (defn -main
   "Receives the blog id; and templates for the index, index posts, and post files"
   [& args]
-  (let [blog-id (first args)
-        index-template-path (nth args 1)
-        index-post-template-path (nth args 2)
-        post-template-path (nth args 3)
+  (let [parsed-args (parse-args args)
+        blog-id (:blog-id parsed-args)
+        directory (:directory parsed-args)
+        index-template-path (:index-template-path parsed-args)
+        index-post-template-path (:index-post-template-path parsed-args)
+        post-template-path (:post-template-path parsed-args)
         index-template (slurp index-template-path)
         index-post-template (slurp index-post-template-path)
         post-template (slurp post-template-path)
-        params {:blog-id blog-id
+        params {:blog-id (or blog-id directory)
+                :origin (if (some? blog-id) :github :local)
                 :index-template index-template
                 :index-post-template index-post-template
                 :post-template post-template}
         data (compiler/draw params)]
     (println "--- # github local blog")
-    (println (str "blog id: " blog-id))
+    (println (str "blog id: " (get params :blog-id)))
+    (println (str "origin: " (get params :origin)))
     (println "generated files:")
     (mapv (fn [[path contents]]
             (do
