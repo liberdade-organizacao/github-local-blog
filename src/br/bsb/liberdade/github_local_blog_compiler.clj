@@ -34,12 +34,16 @@
                                            (str state item)) 
                                          ""))}))
 
+(defn fill-template [template content]
+  (strint/strint template {"content" content}))
+
 (defn generate-post-from-github [blog-id index-post post-template]
   (let [path (get index-post "path")
         raw-post (download-from-github blog-id path)]
-    (cond (re-find text-files-regex path)
-            (markdown/md-to-html-string raw-post)
-          :else raw-post)))
+    (->> (if (re-find text-files-regex path)
+           (markdown/md-to-html-string raw-post)
+           raw-post)
+         (fill-template post-template))))
 
 (defn download-and-compile 
   [blog-id index index-template index-post-template post-template]
@@ -61,9 +65,10 @@
 (defn generate-post [blog-path index-post post-template]
   (let [path (str blog-path "/" (get index-post "path"))
         raw-post (slurp path)]
-    (if (re-find text-files-regex path)
-      (markdown/md-to-html-string raw-post)
-      raw-post)))
+    (->> (if (re-find text-files-regex path)
+           (markdown/md-to-html-string raw-post)
+            raw-post)
+         (fill-template post-template))))
 
 (defn read-and-compile 
   [blog-path index index-template index-post-template post-template]

@@ -1,4 +1,4 @@
-(defproject br.bsb.liberdade.github-local-blog "0.0.1"
+(defproject br.bsb.liberdade.github-local-blog "0.0.2"
   :description "Generate local github blog site"
   :url "http://www.liberdade.bsb.br"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
